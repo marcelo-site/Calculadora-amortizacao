@@ -21,7 +21,7 @@ function calcular() {
     let totalPago = 0           // Total pago no financiamento acrescido os juros
     let valueParacelas = 0
 
-    const span = document.createElement('span')
+    // const span = document.createElement('span')
     const div = document.createElement('div')
     div.setAttribute("style", "margin: 0 0 .5em .5em; line-height: 1.5em;")
     const h2 = document.createElement('h2')

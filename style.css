@@ -72,6 +72,10 @@ input[type='submit'] {
     background-color: #132ddb;
 }
 
+#resultado p {
+    font-size: .9em;
+}
+
 .bold {
     font-weight: bold;
 }
