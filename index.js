@@ -8,9 +8,12 @@ document.querySelector('form').addEventListener('submit', (event) => {
 })
 
 function calcular() {
-    const valorFinanciamento = form.emprestimo.value   // Valor do Financiamento 
-    const taxa = form.taxa.value / 100 // Taxa de Juros ( ao mês)
-    const qtyParcelas = form.qty.value  // Número de Parcelas(Período)
+    const valorFinanciamento = form.emprestimo.value
+        .replace('.', '')   // Valor do Financiamento 
+    const taxa = form.taxa.value
+        .replace('.', '') / 100 // Taxa de Juros ( ao mês)
+    const qtyParcelas = form.qtyParcelas.value
+        .replace('.', '') // Número de Parcelas(Período)
     let table = form.sel.value // regra de juros tabela price || sac
     let amortização = 0         // Amortização =>   a =  valorFinanciamento / qtyParcelas ;  
     let parcelasPG = 0          // Número de Parcelas Pagas 
@@ -23,7 +26,7 @@ function calcular() {
     div.setAttribute("style", "margin: 0 0 .5em .5em; line-height: 1.5em;")
     const h2 = document.createElement('h2')
 
-    resultado.innerHTML= ''
+    resultado.innerHTML = ''
     if (valorFinanciamento && taxa && qtyParcelas) {
         if (table === 'price') {
             for (let index = 0; index < qtyParcelas; index++) {
@@ -63,7 +66,7 @@ function calcular() {
          </p>`
     } else {
         div.classList.add('alerta')
-        div.innerHTML= 'Revise as informações passadas !'
+        div.innerHTML = 'Revise as informações passadas !'
         resultado.append(div)
     }
 }
