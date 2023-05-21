@@ -29,6 +29,7 @@ form input {
 
 form input,
 form select {
+    background-color: #ffffffd1;
     padding: 0.4em;
     border-radius: 5px;
     font-size: .9em;
@@ -38,11 +39,8 @@ form select {
 
 form input:focus,
 form select:focus {
+    background-color: white;
     outline: none;
-}
-
-form select {
-    padding: .4em .5em;
 }
 
 main {
@@ -64,13 +62,15 @@ form label {
     font-size: 1em;
 }
 
-input[type='submit'] {
+input[type='submit'],
+input[type='submit']:focus {
     margin: 10px 0;
     padding: .4em .7em;
     font-weight: bold;
     color: white;
     background-color: #132ddb;
 }
+
 
 #resultado p {
     font-size: .9em;
