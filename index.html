@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="index.js" defer></script>
+</head>
+
+<body>
+    <main>
+        <h1>Calculadora de Amortizações</h1>
+        <form id="form">
+            <div>
+                <div>
+                    <label for="emprestimo">Valor do Empréstimo</label>
+                    <input type="number" name="emprestimo" id="emprestimo" placeholder="Digite o valor do emprestimo"
+                        value="100">
+                </div>
+                <div>
+                    <label for="taxa">Taxa de juros</label>
+                    <input type="number" name="taxa" id="taxa" placeholder="Digite a taxa de juros (%)" value="10">
+                </div>
+                <div>
+                    <label for="qty">Quantidade de parcelas</label>
+                    <input type="number" name="qty" id="" placeholder="Quantidade de parcelas" value="10">
+                </div>
+                <div>
+                    <label for="sel">Tabela</label>
+                    <select name="sel" id="sel">
+                        <option value="price">Price</option>
+                        <option value="sac">Sac</option>
+                    </select>
+                </div>
+                <input type="submit" value="Calcular">
+            </div>
+        </form>
+        <div>
+            <div id="resultado">
+                <h2></h2>
+
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>
