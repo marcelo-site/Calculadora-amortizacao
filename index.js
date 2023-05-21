@@ -2,18 +2,16 @@ const form = document.querySelector('#form')
 const resultado = document.querySelector('#resultado')
 const h2 = document.querySelector('#resultado h2')
 
+
 document.querySelector('form').addEventListener('submit', (event) => {
     event.preventDefault()
     calcular()
 })
 
 function calcular() {
-    const valorFinanciamento = form.emprestimo.value
-        .replace('.', '')   // Valor do Financiamento 
-    const taxa = form.taxa.value
-        .replace('.', '') / 100 // Taxa de Juros ( ao mês)
-    const qtyParcelas = form.qtyParcelas.value
-        .replace('.', '') // Número de Parcelas(Período)
+    const valorFinanciamento = parseFloat(form.emprestimo.value.replace('.', ''))  // Valor do Financiamento 
+    const taxa = parseFloat(form.taxa.value) / 100  // Taxa de Juros ( ao mês)
+    const qtyParcelas = form.qtyParcelas.value  // Número de Parcelas(Período)
     let table = form.sel.value // regra de juros tabela price || sac
     let amortização = 0         // Amortização =>   a =  valorFinanciamento / qtyParcelas ;  
     let parcelasPG = 0          // Número de Parcelas Pagas 
@@ -29,7 +27,7 @@ function calcular() {
     resultado.innerHTML = ''
     if (valorFinanciamento && taxa && qtyParcelas) {
         if (table === 'price') {
-            for (let index = 0; index < qtyParcelas; index++) {
+            for (let index = 0; index <= qtyParcelas; index++) {
                 value = valorFinanciamento * (Math.pow((1 + taxa), qtyParcelas) * taxa) / (Math.pow((1 + taxa), qtyParcelas) - 1)
                 valueParacelas = value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
                 totalPago += value

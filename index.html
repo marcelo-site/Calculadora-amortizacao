@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Calculadora de Amortizações</title>
     <link rel="stylesheet" href="style.css">
     <script src="index.js" defer></script>
 </head>
@@ -17,15 +17,20 @@
             <div>
                 <div>
                     <label for="emprestimo">Valor do empréstimo</label>
-                    <input type="number" name="emprestimo" id="emprestimo" placeholder="Digite o valor do empréstimo">
+                    <input type="text" name="emprestimo" id="emprestimo" oninput="this.value = this.value
+                     .replace(/[^0-9.]/g, '')
+                     .replace(/(\..*?)\..*/g, '$1');" placeholder="Digite o valor do empréstimo">
                 </div>
                 <div>
                     <label for="taxa">Taxa de juros (ao mês)</label>
-                    <input type="number" name="taxa" id="taxa" placeholder="Digite a taxa de juros (%)">
+                    <input type="text" name="taxa" id="taxa" placeholder="Digite a taxa de juros (%)" oninput="this.value = this.value
+                        .replace(/[^0-9.]/g, '')
+                        .replace(/(\..*?)\..*/g, '$1');">
                 </div>
                 <div>
                     <label for="qtyParcelas">Quantidade de parcelas</label>
-                    <input type="number" name="qtyParcelas" id="qtyParcelas" placeholder="Digite a quantidade de parcelas">
+                    <input type="number" name="qtyParcelas" id="qtyParcelas"
+                        placeholder="Digite a quantidade de parcelas">
                 </div>
                 <div>
                     <label for="sel">Tabela</label>
