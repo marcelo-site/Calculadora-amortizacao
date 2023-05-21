@@ -81,11 +81,20 @@ input[type='submit'] {
 }
 
 .sac p:nth-child(odd) {
-    background-color: #f2f2f2;
+    background-color: #e7e7e7;
 }
 
 .sac p {
     padding: 0.2em;
     border-bottom: 1px solid;
     padding-left: 0.5em
+}
+
+.alerta {
+    background-color: #f8f894;
+    border: 2px #2b2b2b solid;
+    color: #2b2b2b;
+    border-radius: 5px;
+    padding: .8em;
+    font-size: .9em;
 }

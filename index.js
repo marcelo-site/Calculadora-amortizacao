@@ -1,7 +1,6 @@
 const form = document.querySelector('#form')
 const resultado = document.querySelector('#resultado')
 const h2 = document.querySelector('#resultado h2')
-console.log(h2)
 
 document.querySelector('form').addEventListener('submit', (event) => {
     event.preventDefault()
@@ -9,7 +8,6 @@ document.querySelector('form').addEventListener('submit', (event) => {
 })
 
 function calcular() {
-    const listaPrestações = []    // Lista de Prestações do Financiamento
     const valorFinanciamento = form.emprestimo.value   // Valor do Financiamento 
     const taxa = form.taxa.value / 100 // Taxa de Juros ( ao mês)
     const qtyParcelas = form.qty.value  // Número de Parcelas(Período)
@@ -31,7 +29,6 @@ function calcular() {
             for (let index = 0; index < qtyParcelas; index++) {
                 value = valorFinanciamento * (Math.pow((1 + taxa), qtyParcelas) * taxa) / (Math.pow((1 + taxa), qtyParcelas) - 1)
                 valueParacelas = value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
-                // listaPrestações.push(value);
                 totalPago += value
             }
             div.innerHTML = `<p><span>${qtyParcelas}</span> parcelas de <span>${valueParacelas}</span></p>`
@@ -65,8 +62,10 @@ function calcular() {
         div2.innerHTML += `<p><span class='bold'>Juros:</span>
         <span class='red'>${totalJuros.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span>
          </p>`
-
     } else {
-        resultado.innerHTML = "Revise as informações"
+        resultado.innerHTML= ''
+        div.classList.add('alerta')
+        div.innerHTML= 'Revise as informações passadas !'
+        resultado.append(div)
     }
 }
