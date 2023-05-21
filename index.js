@@ -20,12 +20,12 @@ function calcular() {
 
     const span = document.createElement('span')
     const div = document.createElement('div')
-    div.setAttribute("style", "margin: 1em 0; line-height: 1.5em;")
+    div.setAttribute("style", "margin: 0 0 .5em .5em; line-height: 1.5em;")
     const h2 = document.createElement('h2')
 
+    resultado.innerHTML= ''
     if (valorFinanciamento && taxa && qtyParcelas) {
         if (table === 'price') {
-            resultado.innerHTML = ''
             for (let index = 0; index < qtyParcelas; index++) {
                 value = valorFinanciamento * (Math.pow((1 + taxa), qtyParcelas) * taxa) / (Math.pow((1 + taxa), qtyParcelas) - 1)
                 valueParacelas = value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
@@ -34,7 +34,6 @@ function calcular() {
             div.innerHTML = `<p><span>${qtyParcelas}</span> parcelas de <span>${valueParacelas}</span></p>`
 
         } else if (table === 'sac') {
-            resultado.innerHTML = ''
             div.classList.add('sac')
             const divParcela = resultado.appendChild(div)
             for (let index = 0; index < qtyParcelas; index++) {
@@ -45,7 +44,7 @@ function calcular() {
                 valueParacelas = value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
 
                 const p = document.createElement('p')
-                p.innerHTML = `${index + 1}&#186; parcela ${valueParacelas} <br>`
+                p.innerHTML = `${index + 1}&#186; parcela ${valueParacelas}`
                 divParcela.appendChild(p)
             }
         }
@@ -63,7 +62,6 @@ function calcular() {
         <span class='red'>${totalJuros.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span>
          </p>`
     } else {
-        resultado.innerHTML= ''
         div.classList.add('alerta')
         div.innerHTML= 'Revise as informações passadas !'
         resultado.append(div)

@@ -33,6 +33,7 @@ form select {
     border-radius: 5px;
     font-size: .9em;
     border: none;
+    box-shadow: 1px 1px 5px #00000094
 }
 
 form input:focus,
