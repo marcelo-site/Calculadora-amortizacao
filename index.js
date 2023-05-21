@@ -1,7 +1,8 @@
 const form = document.querySelector('#form')
 const resultado = document.querySelector('#resultado')
+const resumo = document.querySelector('#resumo')
 const h2 = document.querySelector('#resultado h2')
-
+const none = document.querySelector('.none')
 
 document.querySelector('form').addEventListener('submit', (event) => {
     event.preventDefault()
@@ -9,57 +10,102 @@ document.querySelector('form').addEventListener('submit', (event) => {
 })
 
 function calcular() {
-    const valorFinanciamento = parseFloat(form.emprestimo.value.replace('.', ''))  // Valor do Financiamento 
+    const valorFinanciamento = parseFloat(form.emprestimo.value.replace('.', ''))
     const taxa = parseFloat(form.taxa.value) / 100  // Taxa de Juros ( ao mês)
     const qtyParcelas = form.qtyParcelas.value  // Número de Parcelas(Período)
-    let table = form.sel.value // regra de juros tabela price || sac
-    let amortização = 0         // Amortização =>   a =  valorFinanciamento / qtyParcelas ;  
+    let table = form.sel.value  // regra de juros tabela price || sac
+    let valueAmortizacao = 0    // Amortização=> a = valorFinanciamento/qtyParcelas ;  
     let parcelasPG = 0          // Número de Parcelas Pagas 
     let totalJuros = 0          // Total de juros pagos do financiamento
-    let totalPago = 0           // Total pago no financiamento acrescido os juros
-    let valueParacelas = 0
+    let totalPago = 0           // Total pago com juros
+    let valueParacelas = 0      // valor das poarcelas
+    let value = 0               // aux para calcular valueParcelas
+    let saldoAtual = 0          // financiamento restante sem juros
 
-    // const span = document.createElement('span')
     const div = document.createElement('div')
-    div.setAttribute("style", "margin: 0 0 .5em .5em; line-height: 1.5em;")
-    const h2 = document.createElement('h2')
-
+    div.classList.add('sac')
     resultado.innerHTML = ''
+    resumo.innerHTML = ''
     if (valorFinanciamento && taxa && qtyParcelas) {
+        const divParcela = resultado.appendChild(div)
+
         if (table === 'price') {
-            for (let index = 0; index <= qtyParcelas; index++) {
-                value = valorFinanciamento * (Math.pow((1 + taxa), qtyParcelas) * taxa) / (Math.pow((1 + taxa), qtyParcelas) - 1)
-                valueParacelas = value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
-                totalPago += value
-            }
-            div.innerHTML = `<p><span>${qtyParcelas}</span> parcelas de <span>${valueParacelas}</span></p>`
-
-        } else if (table === 'sac') {
-            div.classList.add('sac')
-            const divParcela = resultado.appendChild(div)
             for (let index = 0; index < qtyParcelas; index++) {
-                amortização = valorFinanciamento / qtyParcelas
-                parcelasPG = index
-                const value = amortização + taxa * (valorFinanciamento - (parcelasPG * amortização))
+                if (index === 0) {
+                    jurosAt = valorFinanciamento -
+                        (valorFinanciamento - (valorFinanciamento * taxa))
+                }
+                value = valorFinanciamento * (Math.pow((1 + taxa), qtyParcelas) * taxa) / (Math.pow((1 + taxa), qtyParcelas) - 1)
+                valueParacelas = value.toLocaleString('pt-br',
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    })
+                if (totalPago) {
+                    jurosAt = saldoAtual * taxa
+                    saldoAtual = saldoAtual - (value - jurosAt)
+                } else {
+                    saldoAtual = valorFinanciamento - (value - jurosAt)
+                }
                 totalPago += value
-                valueParacelas = value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
 
-                const p = document.createElement('p')
-                p.innerHTML = `${index + 1}&#186; parcela ${valueParacelas}`
-                divParcela.appendChild(p)
+                render(index, valueParacelas, valueAmortizacao, jurosAt, saldoAtual)
+            }
+        } else if (table === 'sac') {
+            for (let index = 0; index < qtyParcelas; index++) {
+                valueAmortização = valorFinanciamento / qtyParcelas
+                parcelasPG = index
+                const value = valueAmortização + taxa * (valorFinanciamento - (parcelasPG * valueAmortização))
+                totalPago += value
+                valueParacelas = value.toLocaleString('pt-br',
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                })
+                jurosAt = value - valueAmortização
+                saldoAtual = valorFinanciamento - valueAmortização * (parcelasPG + 1)
+
+                render(index, valueParacelas, valueAmortizacao, jurosAt, saldoAtual)
             }
         }
-        h2.innerHTML = 'Resultado:'
-        resultado.append(h2)
+        //
+        function render(index, valueParacelas, valueAmortizacao, jurosAt, saldoAtual) {
+            const p = document.createElement('p')
+            valueAmortizacao = (jurosAt - value).toLocaleString('pt-br',
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            }).replace('-', '')
+            
+            p.innerHTML =
+                `<span>${index + 1}</span> 
+                <span>${valueParacelas}</span>
+                <span>${valueAmortizacao}</span>
+                <span>${jurosAt.toLocaleString('pt-br',
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                })
+                    .replace('R$', '')}</span>
+                <span>${saldoAtual
+                    .toLocaleString('pt-br',
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    })}</span>
+                `
+            divParcela.appendChild(p)
+        }
+
+        none.classList.remove('none')
         resultado.append(div)
-        const div2 = document.createElement('div')
-        resultado.append(div2)
-        div2.setAttribute("style", "font-size: .8em;")
-        div2.innerHTML += `<p><span class='bold'>Total pago:</span> 
+        const resumo = document.querySelector('#resumo')
+        resumo.setAttribute("style", "font-size: .8em;")
+        resumo.innerHTML += `<p><span class='bold'>Total pago:</span> 
         <span class='red'>${totalPago.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span>
         </p>`
         totalJuros = totalPago - valorFinanciamento
-        div2.innerHTML += `<p><span class='bold'>Juros:</span>
+        resumo.innerHTML += `<p><span class='bold'>Juros:</span>
         <span class='red'>${totalJuros.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span>
          </p>`
     } else {
