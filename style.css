@@ -4,6 +4,9 @@
     padding: 0;
     box-sizing: border-box;
 }
+h1 {
+    text-align: center;
+}
 
 h1, h2 {
     margin: 1em 0;
