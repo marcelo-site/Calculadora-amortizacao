@@ -35,6 +35,11 @@ form select {
     border: none;
 }
 
+form input:focus,
+form select:focus {
+    outline: none;
+}
+
 form select {
     padding: .4em .5em;
 }
