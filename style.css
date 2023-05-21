@@ -47,7 +47,7 @@ form select {
 
 main {
     max-width: 600px;
-    margin-bottom: 2em;
+    margin-bottom: 3em;
 }
 
 form {
@@ -110,4 +110,19 @@ input[type='submit'] {
     border-radius: 5px;
     padding: .8em;
     font-size: .9em;
+}
+
+footer {
+    position: fixed;
+    text-align: center;
+    background-color: #414242;
+    color: white;
+    padding: 0.5em;
+    bottom: 0;
+    width: 100vw;
+}
+
+footer a {
+    text-decoration: none;
+    color: #db7a16;
 }
