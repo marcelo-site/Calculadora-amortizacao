@@ -73,6 +73,7 @@ input[type='submit']:focus {
     font-weight: bold;
     color: white;
     background-color: #132ddb;
+    cursor: pointer;
 }
 
 #resultado p {
