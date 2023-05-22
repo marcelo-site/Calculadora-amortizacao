@@ -18,9 +18,10 @@ function calcular() {
     let parcelasPG = 0          // Número de Parcelas Pagas 
     let totalJuros = 0          // Total de juros pagos do financiamento
     let totalPago = 0           // Total pago com juros
-    let valueParacelas = 0      // valor das poarcelas
-    let value = 0               // aux para calcular valueParcelas
-    let saldoAtual = 0          // financiamento restante sem juros
+    let valueParacelas = 0      // Valor das poarcelas
+    let value = 0               // Aux para calcular valueParcelas
+    let saldoAtual = 0          // Financiamento restante sem juros
+    let jurosAtual = 0          // Valor do montante de juros pago no mês
 
     const div = document.createElement('div')
     div.classList.add('sac')
@@ -32,7 +33,7 @@ function calcular() {
         if (table === 'price') {
             for (let index = 0; index < qtyParcelas; index++) {
                 if (index === 0) {
-                    jurosAt = valorFinanciamento -
+                    jurosAtual = valorFinanciamento -
                         (valorFinanciamento - (valorFinanciamento * taxa))
                 }
                 value = valorFinanciamento * (Math.pow((1 + taxa), qtyParcelas) * taxa) / (Math.pow((1 + taxa), qtyParcelas) - 1)
@@ -42,14 +43,14 @@ function calcular() {
                         maximumFractionDigits: 2,
                     })
                 if (totalPago) {
-                    jurosAt = saldoAtual * taxa
-                    saldoAtual = saldoAtual - (value - jurosAt)
+                    jurosAtual = saldoAtual * taxa
+                    saldoAtual = saldoAtual - (value - jurosAtual)
                 } else {
-                    saldoAtual = valorFinanciamento - (value - jurosAt)
+                    saldoAtual = valorFinanciamento - (value - jurosAtual)
                 }
                 totalPago += value
 
-                render(index, valueParacelas, valueAmortizacao, jurosAt, saldoAtual)
+                render(index, valueParacelas, valueAmortizacao, jurosAtual, saldoAtual)
             }
         } else if (table === 'sac') {
             for (let index = 0; index < qtyParcelas; index++) {
@@ -62,16 +63,16 @@ function calcular() {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                 })
-                jurosAt = value - valueAmortização
+                jurosAtual = value - valueAmortização
                 saldoAtual = valorFinanciamento - valueAmortização * (parcelasPG + 1)
 
-                render(index, valueParacelas, valueAmortizacao, jurosAt, saldoAtual)
+                render(index, valueParacelas, valueAmortizacao, jurosAtual, saldoAtual)
             }
         }
         //
-        function render(index, valueParacelas, valueAmortizacao, jurosAt, saldoAtual) {
+        function render(index, valueParacelas, valueAmortizacao, jurosAtual, saldoAtual) {
             const p = document.createElement('p')
-            valueAmortizacao = (jurosAt - value).toLocaleString('pt-br',
+            valueAmortizacao = (jurosAtual - value).toLocaleString('pt-br',
             {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
@@ -81,7 +82,7 @@ function calcular() {
                 `<span>${index + 1}</span> 
                 <span>${valueParacelas}</span>
                 <span>${valueAmortizacao}</span>
-                <span>${jurosAt.toLocaleString('pt-br',
+                <span>${jurosAtual.toLocaleString('pt-br',
                 {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
