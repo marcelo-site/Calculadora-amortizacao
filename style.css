@@ -89,10 +89,12 @@ input[type='submit']:focus {
 .grid {
     text-align: center;
     display: grid;
-    grid-template-columns: .3fr repeat(4, 1fr)
+    grid-template-columns: .31fr repeat(4, 1fr)
 }
 
 .grid span {
+    font-size: .95em;
+    font-weight: bold;
     border: 1px solid;
     padding: 0.1em;
 }

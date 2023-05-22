@@ -76,7 +76,7 @@ function calcular() {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
             }).replace('-', '')
-            
+
             p.innerHTML =
                 `<span>${index + 1}</span> 
                 <span>${valueParacelas}</span>
@@ -85,15 +85,13 @@ function calcular() {
                 {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
-                })
-                    .replace('R$', '')}</span>
-                <span>${saldoAtual
-                    .toLocaleString('pt-br',
+                }).replace('R$', '')}
+                </span>
+                <span>${saldoAtual.toLocaleString('pt-br',
                     {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
-                    })}</span>
-                `
+                    })}</span>`
             divParcela.appendChild(p)
         }
 
