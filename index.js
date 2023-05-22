@@ -49,32 +49,41 @@ function calcular() {
                     saldoAtual = valorFinanciamento - (value - jurosAtual)
                 }
                 totalPago += value
+
+                valueAmortizacao = (jurosAtual - value).toLocaleString('pt-br',
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    }).replace('-', '')
+
                 render(index, valueParacelas, valueAmortizacao, jurosAtual, saldoAtual)
             }
         } else if (table === 'sac') {
             for (let index = 0; index < qtyParcelas; index++) {
-                valueAmortização = valorFinanciamento / qtyParcelas
+                valueAmortizacao = valorFinanciamento / qtyParcelas
                 parcelasPG = index
-                const value = valueAmortização + taxa * (valorFinanciamento - (parcelasPG * valueAmortização))
+                const value = valueAmortizacao + taxa * (valorFinanciamento - (parcelasPG * valueAmortizacao))
                 totalPago += value
                 valueParacelas = value.toLocaleString('pt-br',
                     {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                     })
-                jurosAtual = value - valueAmortização
-                saldoAtual = valorFinanciamento - valueAmortização * (parcelasPG + 1)
-                render(index, valueParacelas, valueAmortizacao, jurosAtual, saldoAtual)
+                jurosAtual = value - valueAmortizacao
+                saldoAtual = valorFinanciamento - valueAmortizacao * (parcelasPG + 1)
+
+                const parcela = valueAmortizacao.toLocaleString('pt-br',
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    })
+                render(index, valueParacelas, parcela, jurosAtual, saldoAtual)
             }
         }
 
         function render(index, valueParacelas, valueAmortizacao, jurosAtual, saldoAtual) {
             const p = document.createElement('p')
-            valueAmortizacao = (jurosAtual - value).toLocaleString('pt-br',
-                {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                }).replace('-', '')
+
             p.innerHTML = `<span>${index + 1}</span> 
                 <span>${valueParacelas}</span>
                 <span>${valueAmortizacao}</span>
