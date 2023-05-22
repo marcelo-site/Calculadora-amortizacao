@@ -97,6 +97,11 @@ input[type='submit']:focus {
     font-weight: bold;
     border: 1px solid;
     padding: 0.1em;
+    border-left: none;
+}
+
+.grid span:nth-child(1) {
+    border-left: 1px solid;
 }
 
 p span {
@@ -113,7 +118,7 @@ p span {
 }
 
 .sac {
-    border: 1px solid black;
+    border-right: 1px solid black;
     border-radius: 0 0 5px;
 }
 
