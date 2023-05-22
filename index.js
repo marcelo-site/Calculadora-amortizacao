@@ -49,13 +49,11 @@ function calcular() {
                     saldoAtual = valorFinanciamento - (value - jurosAtual)
                 }
                 totalPago += value
-
                 valueAmortizacao = (jurosAtual - value).toLocaleString('pt-br',
                     {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                     }).replace('-', '')
-
                 render(index, valueParacelas, valueAmortizacao, jurosAtual, saldoAtual)
             }
         } else if (table === 'sac') {
@@ -80,10 +78,8 @@ function calcular() {
                 render(index, valueParacelas, parcela, jurosAtual, saldoAtual)
             }
         }
-
         function render(index, valueParacelas, valueAmortizacao, jurosAtual, saldoAtual) {
             const p = document.createElement('p')
-
             p.innerHTML = `<span>${index + 1}</span> 
                 <span>${valueParacelas}</span>
                 <span>${valueAmortizacao}</span>
