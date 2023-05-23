@@ -14,44 +14,42 @@
     <main>
         <h1>Calculadora de Financiamento</h1>
         <div class="paragrafo">
-            <p>calcule seu financiamento usando a tabela PRICE que retorna parcelas fixas ou tabela SAC com parcelas descrescentes, os modelos de financiamento mais usados.
+            <p>calcule seu financiamento com parcelas fixas, usando a tabela price, ou parcelas descrescentes, com a
+                tabela SAC, os modelos de financiamento mais usados.
             </p>
             <p>
-                o calculo inclui apenas o valor digitado, sem considerar valores extras como IOF(imposto sobre operações financeiras), ou algum outro valor que possa constar no pacote do Financiamento.
+                o calculo inclui apenas o valor digitado, sem considerar valores extras como IOF(imposto sobre operações
+                financeiras), ou algum outro valor que possa constar no pacote do Financiamento.
             </p>
         </div>
         <form id="form">
             <div>
                 <div>
                     <label for="financiamento">Valor do Financiamento</label>
-                    <input type="text" name="financiamento" id="financiamento" value="" oninput="this.value = this.value
-                    .replace(/[^0-9.|,]/g, '')
-                    .replace(/(\*?)\*/g, '$1');" placeholder="Digite o valor do empréstimo">
+                    <input type="text" name="financiamento" id="financiamento" value="" placeholder="ex: 1.000,00">
                 </div>
                 <div>
                     <label for="taxa">Taxa de juros (ao mês)</label>
-                    <input type="text" name="taxa" id="taxa" placeholder="Digite a taxa de juros (%)" oninput="this.value = this.value
-                        .replace(/[^0-9.|,]/g, '')
-                        .replace(/(\*?)\*/g, '$1');">
+                    <input type="text" name="taxa" id="taxa" placeholder="ex: 5,80 para 58%">
                 </div>
                 <div>
                     <label for="qtyParcelas">Quantidade de parcelas</label>
                     <input type="number" name="qtyParcelas" id="qtyParcelas"
                         placeholder="Digite a quantidade de parcelas">
                 </div>
-                <div>
-                    <label for="sel">Tabela</label>
-                    <select name="sel" id="sel">
-                        <option value="price">PRICE</option>
-                        <option value="sac">SAC</option>
-                    </select>
+                <div id="parcelas">
+                    <div>Parcelas</div>
+                    <div>
+                        <label id="label-price" class="active" for="price">Fixas</label>
+                        <input type="radio" name="tabela" id="price" value="price" checked>
+                        <label id="label-sac" class="inactive" for="sac">Descrescentes</label>
+                        <input type="radio" name="tabela" id="sac" value="sac">
+                    </div>
+                    <input type="submit" value="Calcular">
                 </div>
-                <input type="submit" value="Calcular">
             </div>
         </form>
-        <div>
-        </div>
-        <div>
+        <!-- <div> -->
             <div style="overflow-x: auto;">
                 <div>
                     <div class="none" style="width: 600px;">
@@ -69,6 +67,7 @@
             </div>
             <div id="resumo">
             </div>
+        <!-- </div> -->
     </main>
     <footer>
         <p>Feito por <a href="https://www.facebook.com/profile.php?id=100015225941991" target="_blank">Marcelo</a>

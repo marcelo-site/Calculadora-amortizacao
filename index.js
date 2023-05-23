@@ -4,32 +4,72 @@ const resumo = document.querySelector('#resumo')
 const h2 = document.querySelector('#resultado h2')
 const none = document.querySelector('.none')
 const div = document.createElement('div')
+const divParcela = resultado.appendChild(div)
 let textAlert = ''
-const submit = document.querySelector('input[type="submit"]')
+const price = document.querySelector('#label-price')
+const sac = document.querySelector('#label-sac')
+const tabela = form.tabela
+let calc = false
+
+const active = (node1, node2) => {
+    node1.classList.toggle('active')
+    node1.classList.toggle('inactive')
+    node2.classList.toggle('active')
+    node2.classList.toggle('inactive')
+}
+tabela.forEach(el => {
+    el.addEventListener('change', () => {
+        active(price, sac)
+        if (calc) {
+            calcular()
+        }
+    })})
+
+const replaceInput = (el) => {
+    el.addEventListener('input', function () {
+   this.value = this.value
+    .replace(/[^0-9.|,]/g, '')
+    .replace(/(\*?)\*/g, '$1');
+})}
+replaceInput(form.financiamento)
+replaceInput(form.taxa)
 
 form.addEventListener('submit', (event) => {
     event.preventDefault()
+    calc = true
     calcular()
 })
 
-function alert(text) {
-    div.classList.add('alerta')
+const alert = (text) => {
+    div.classList.add('alert')
     div.innerHTML = text
     return resumo.append(div)
 }
 
-function calcular() {
+const render = (param1, param2, param3, param4, param5) => {
+    divParcela.innerHTML +=
+        `<p>
+        <span>${param1 + 1}</span> 
+        <span>${param2}</span>
+        <span>${param3}</span>
+        <span>${param4}</span>
+        <span>${param5}</span>
+        </p>`
+}
+
+const calcular = () => {
     resultado.innerHTML = ''
     resumo.innerHTML = ''
-    if (form.financiamento.value && form.taxa.value && form.qtyParcelas.value) {
-        let inpFinanciamento = form.financiamento.value
-        let inpTaxa = form.taxa.value
-        const f = inpFinanciamento.match(/\,/g) || []
-        const t = inpTaxa.match(/\,/g) || []
+    let inpFinanciamento = form.financiamento.value
+    let inpTaxa = form.taxa.value
 
-        if (f.length > 2 ||
-            t.length > 2) {
-            textAlert = "Você usou pontos ou virgulas de forma inadequada !"
+    if (inpFinanciamento && inpTaxa && form.qtyParcelas.value) {
+        const financMatch = inpFinanciamento.match(/\,/g) || []
+        const taxaMatch = inpTaxa.match(/\,/g) || []
+
+        if (financMatch.length > 1 || taxaMatch.length > 1) {
+            textAlert = "Para separar a casa dos milhares use ponto em vez de virgulas!"
+            none.classList.add('none')
             return alert(textAlert)
         }
         const valorFinanciamento = parseFloat(inpFinanciamento
@@ -40,23 +80,26 @@ function calcular() {
             .replace(/\,/g, '.')) / 100
 
         const qtyParcelas = form.qtyParcelas.value  // Número de Parcelas(Período)
-        let table = form.sel.value  // regra de juros tabela price || sac
+        let table = form.tabela.value  // regra de juros tabela price || sac
         let valueAmortizacao = 0    // Amortização=> a = valorFinanciamento/qtyParcelas ;  
         let parcelasPG = 0          // Número de Parcelas Pagas 
         let totalJuros = 0          // Total de juros pagos do financiamento
         let totalPago = 0           // Total pago com juros
         let valueParacelas = 0      // Valor das poarcelas
         let value = 0               // Aux para calcular valueParcelas
-        let saldoAtual = 0          // Financiamento restante sem juros
-        let jurosAtual = 0          // Valor do montante de juros pago no mês
+        let saldoDevedor = 0        // Financiamento restante sem juros
+        let saldoDevedorBR          // saldoDevedor em moeda br
+        let jurosValue = 0          // Valor do montante de juros pago no mês
+        let jurosValueBR             // jurosValue em moeda br
 
-        div.classList.add('sac')
-        const divParcela = resultado.appendChild(div)
+        div.classList.add('table')
+        div.classList.remove('alert')
+        divParcela.innerHTML = ''
 
         if (table === 'price') {
             for (let index = 0; index < qtyParcelas; index++) {
                 if (index === 0) {
-                    jurosAtual = valorFinanciamento -
+                    jurosValue = valorFinanciamento -
                         (valorFinanciamento - (valorFinanciamento * taxa))
                 }
                 value = valorFinanciamento * (Math.pow((1 + taxa), qtyParcelas) * taxa) / (Math.pow((1 + taxa), qtyParcelas) - 1)
@@ -66,19 +109,30 @@ function calcular() {
                         maximumFractionDigits: 2,
                     })
                 if (totalPago) {
-                    jurosAtual = saldoAtual * taxa
-                    saldoAtual = saldoAtual - (value - jurosAtual)
+                    jurosValue = saldoDevedor * taxa
+                    saldoDevedor = saldoDevedor - (value - jurosValue)
                 } else {
-                    saldoAtual = valorFinanciamento - (value - jurosAtual)
+                    saldoDevedor = valorFinanciamento - (value - jurosValue)
                 }
                 totalPago += value
-                valueAmortizacao = (jurosAtual - value).toLocaleString('pt-br',
+                valueAmortizacao = (jurosValue - value).toLocaleString('pt-br',
                     {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                     }).replace('-', '')
-                    
-                render(index, valueParacelas, valueAmortizacao, jurosAtual, saldoAtual)
+
+                jurosValueBR = jurosValue.toLocaleString('pt-br',
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    })
+                saldoDevedorBR = saldoDevedor.toLocaleString('pt-br',
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    })
+
+                render(index, valueParacelas, valueAmortizacao, jurosValueBR, saldoDevedorBR)
             }
         } else if (table === 'sac') {
             for (let index = 0; index < qtyParcelas; index++) {
@@ -91,34 +145,26 @@ function calcular() {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                     })
-                jurosAtual = value - valueAmortizacao
-                saldoAtual = valorFinanciamento - valueAmortizacao * (parcelasPG + 1)
+                jurosValue = value - valueAmortizacao
+                saldoDevedor = valorFinanciamento - valueAmortizacao * (parcelasPG + 1)
 
                 const parcela = valueAmortizacao.toLocaleString('pt-br',
                     {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                     })
-                render(index, valueParacelas, parcela, jurosAtual, saldoAtual)
-            }
-        }
-        function render(index, valueParacelas, valueAmortizacao, jurosAtual, saldoAtual) {
-            const p = document.createElement('p')
-            p.innerHTML = `<span>${index + 1}</span> 
-                <span>${valueParacelas}</span>
-                <span>${valueAmortizacao}</span>
-                <span>${jurosAtual.toLocaleString('pt-br',
-                {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                }).replace('R$', '')}
-                </span>
-                <span>${saldoAtual.toLocaleString('pt-br',
+                jurosValueBR = jurosValue.toLocaleString('pt-br',
                     {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
-                    })}</span>`
-            divParcela.appendChild(p)
+                    })
+                saldoDevedorBR = saldoDevedor.toLocaleString('pt-br',
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    })
+                render(index, valueParacelas, parcela, jurosValueBR, saldoDevedorBR)
+            }
         }
         none.classList.remove('none')
         resultado.append(div)
