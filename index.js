@@ -4,14 +4,17 @@ const resumo = document.querySelector('#resumo')
 const h2 = document.querySelector('#resultado h2')
 const none = document.querySelector('.none')
 
-document.querySelector('form').addEventListener('submit', (event) => {
+form.addEventListener('submit', (event) => {
     event.preventDefault()
     calcular()
 })
 
 function calcular() {
-    const valorFinanciamento = parseFloat(form.emprestimo.value.replace('.', ''))
-    const taxa = parseFloat(form.taxa.value) / 100  // Taxa de Juros ( ao mês)
+    const valorFinanciamento = parseFloat(form.emprestimo.value
+        .replace(/\./g, '')
+        .replace(/\,/g, '.'))
+    const taxa = parseFloat(form.taxa.value
+        .replace(/\,/g, '.')) / 100  // Taxa de Juros ( ao mês)
     const qtyParcelas = form.qtyParcelas.value  // Número de Parcelas(Período)
     let table = form.sel.value  // regra de juros tabela price || sac
     let valueAmortizacao = 0    // Amortização=> a = valorFinanciamento/qtyParcelas ;  
@@ -107,6 +110,10 @@ function calcular() {
         <span class='red'>${totalJuros.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span>
          </p>`
     } else {
+        alert()
+    }
+
+    function alert() {
         div.classList.add('alerta')
         div.innerHTML = 'Revise as informações passadas !'
         resultado.append(div)

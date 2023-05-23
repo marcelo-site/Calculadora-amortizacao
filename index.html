@@ -12,20 +12,27 @@
 
 <body>
     <main>
-        <h1>Calculadora de Empréstimo</h1>
+        <h1>Calculadora de Financiamento</h1>
+        <div class="paragrafo">
+            <p>calcule seu financiamento usando a tabela PRICE que retorna parcelas fixas ou tabela SAC com parcelas descrescentes, os modelos de financiamento mais usados.
+            </p>
+            <p>
+                o calculo inclui apenas o valor digitado, sem considerar valores extras como IOF(imposto sobre operações financeiras), ou algum outro valor que possa constar no pacote do Financiamento.
+            </p>
+        </div>
         <form id="form">
             <div>
                 <div>
-                    <label for="emprestimo">Valor do empréstimo</label>
-                    <input type="text" name="emprestimo" id="emprestimo" oninput="this.value = this.value
-                     .replace(/[^0-9.]/g, '')
-                     .replace(/(\..*?)\..*/g, '$1');" placeholder="Digite o valor do empréstimo">
+                    <label for="emprestimo">Valor do Financiamento</label>
+                    <input type="text" name="emprestimo" id="emprestimo" value="" oninput="this.value = this.value
+                    .replace(/[^0-9.|,]/g, '')
+                    .replace(/(\*?)\*|?=\1+/g, '$1');" placeholder="Digite o valor do empréstimo">
                 </div>
                 <div>
                     <label for="taxa">Taxa de juros (ao mês)</label>
                     <input type="text" name="taxa" id="taxa" placeholder="Digite a taxa de juros (%)" oninput="this.value = this.value
-                        .replace(/[^0-9.]/g, '')
-                        .replace(/(\..*?)\..*/g, '$1');">
+                        .replace(/[^0-9.|,]/g, '')
+                        .replace(/(\*?)\*/g, '$1');">
                 </div>
                 <div>
                     <label for="qtyParcelas">Quantidade de parcelas</label>
@@ -35,13 +42,16 @@
                 <div>
                     <label for="sel">Tabela</label>
                     <select name="sel" id="sel">
-                        <option value="price">Price</option>
-                        <option value="sac">Sac</option>
+                        <option value="price">PRICE</option>
+                        <option value="sac">SAC</option>
                     </select>
                 </div>
                 <input type="submit" value="Calcular">
             </div>
         </form>
+        <div>
+            <!-- <p>o cálculo inclui apenas o valor digitado, sem considerar valores extras como IOF (imposto sobre operações financeiras), ou algum outro valor que possa constar no pacote do Financiamento.</p> -->
+        </div>
         <div>
             <div style="overflow-x: auto;">
                 <div>
@@ -55,10 +65,10 @@
                         </div>
                         <div id="resultado">
                         </div>
-                </div>
+                    </div>
                 </div>
             </div>
-            <div id="resumo">   
+            <div id="resumo">
             </div>
     </main>
     <footer>

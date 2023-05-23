@@ -25,6 +25,13 @@ body {
     line-height: 1.5em;
 }
 
+div.paragrafo {
+    text-align: justify;
+    font-size: .8em;
+    line-height: 1.5em;
+    margin: -10px 0.5em 1em;
+}
+
 form input {
     width: 95%;
 }
