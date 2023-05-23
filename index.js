@@ -3,36 +3,56 @@ const resultado = document.querySelector('#resultado')
 const resumo = document.querySelector('#resumo')
 const h2 = document.querySelector('#resultado h2')
 const none = document.querySelector('.none')
+const div = document.createElement('div')
+let textAlert = ''
+const submit = document.querySelector('input[type="submit"]')
 
 form.addEventListener('submit', (event) => {
     event.preventDefault()
     calcular()
 })
 
-function calcular() {
-    const valorFinanciamento = parseFloat(form.emprestimo.value
-        .replace(/\./g, '')
-        .replace(/\,/g, '.'))
-    const taxa = parseFloat(form.taxa.value
-        .replace(/\,/g, '.')) / 100  // Taxa de Juros ( ao mês)
-    const qtyParcelas = form.qtyParcelas.value  // Número de Parcelas(Período)
-    let table = form.sel.value  // regra de juros tabela price || sac
-    let valueAmortizacao = 0    // Amortização=> a = valorFinanciamento/qtyParcelas ;  
-    let parcelasPG = 0          // Número de Parcelas Pagas 
-    let totalJuros = 0          // Total de juros pagos do financiamento
-    let totalPago = 0           // Total pago com juros
-    let valueParacelas = 0      // Valor das poarcelas
-    let value = 0               // Aux para calcular valueParcelas
-    let saldoAtual = 0          // Financiamento restante sem juros
-    let jurosAtual = 0          // Valor do montante de juros pago no mês
+function alert(text) {
+    div.classList.add('alerta')
+    div.innerHTML = text
+    return resumo.append(div)
+}
 
-    const div = document.createElement('div')
-    div.classList.add('sac')
+function calcular() {
     resultado.innerHTML = ''
     resumo.innerHTML = ''
+    if (form.financiamento.value && form.taxa.value && form.qtyParcelas.value) {
+        let inpFinanciamento = form.financiamento.value
+        let inpTaxa = form.taxa.value
+        const f = inpFinanciamento.match(/\,/g) || []
+        const t = inpTaxa.match(/\,/g) || []
 
-    if (valorFinanciamento && taxa && qtyParcelas) {
+        if (f.length > 2 ||
+            t.length > 2) {
+            textAlert = "Você usou pontos ou virgulas de forma inadequada !"
+            return alert(textAlert)
+        }
+        const valorFinanciamento = parseFloat(inpFinanciamento
+            .replace(/\./g, '')
+            .replace(/\,/g, '.')
+        )
+        const taxa = parseFloat(inpTaxa
+            .replace(/\,/g, '.')) / 100
+
+        const qtyParcelas = form.qtyParcelas.value  // Número de Parcelas(Período)
+        let table = form.sel.value  // regra de juros tabela price || sac
+        let valueAmortizacao = 0    // Amortização=> a = valorFinanciamento/qtyParcelas ;  
+        let parcelasPG = 0          // Número de Parcelas Pagas 
+        let totalJuros = 0          // Total de juros pagos do financiamento
+        let totalPago = 0           // Total pago com juros
+        let valueParacelas = 0      // Valor das poarcelas
+        let value = 0               // Aux para calcular valueParcelas
+        let saldoAtual = 0          // Financiamento restante sem juros
+        let jurosAtual = 0          // Valor do montante de juros pago no mês
+
+        div.classList.add('sac')
         const divParcela = resultado.appendChild(div)
+
         if (table === 'price') {
             for (let index = 0; index < qtyParcelas; index++) {
                 if (index === 0) {
@@ -57,6 +77,7 @@ function calcular() {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                     }).replace('-', '')
+                    
                 render(index, valueParacelas, valueAmortizacao, jurosAtual, saldoAtual)
             }
         } else if (table === 'sac') {
@@ -101,7 +122,6 @@ function calcular() {
         }
         none.classList.remove('none')
         resultado.append(div)
-        const resumo = document.querySelector('#resumo')
         resumo.setAttribute("style", "font-size: .8em;")
         resumo.innerHTML += `<p><span class='bold'>Total pago:</span> 
         <span class='red'>${totalPago.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span></p>`
@@ -110,12 +130,7 @@ function calcular() {
         <span class='red'>${totalJuros.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span>
          </p>`
     } else {
-        alert()
-    }
-
-    function alert() {
-        div.classList.add('alerta')
-        div.innerHTML = 'Revise as informações passadas !'
-        resultado.append(div)
+        textAlert = 'Revise as informações passadas !'
+        alert(textAlert)
     }
 }

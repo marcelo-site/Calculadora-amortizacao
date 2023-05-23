@@ -23,10 +23,10 @@
         <form id="form">
             <div>
                 <div>
-                    <label for="emprestimo">Valor do Financiamento</label>
-                    <input type="text" name="emprestimo" id="emprestimo" value="" oninput="this.value = this.value
+                    <label for="financiamento">Valor do Financiamento</label>
+                    <input type="text" name="financiamento" id="financiamento" value="" oninput="this.value = this.value
                     .replace(/[^0-9.|,]/g, '')
-                    .replace(/(\*?)\*|?=\1+/g, '$1');" placeholder="Digite o valor do empréstimo">
+                    .replace(/(\*?)\*/g, '$1');" placeholder="Digite o valor do empréstimo">
                 </div>
                 <div>
                     <label for="taxa">Taxa de juros (ao mês)</label>
@@ -50,7 +50,6 @@
             </div>
         </form>
         <div>
-            <!-- <p>o cálculo inclui apenas o valor digitado, sem considerar valores extras como IOF (imposto sobre operações financeiras), ou algum outro valor que possa constar no pacote do Financiamento.</p> -->
         </div>
         <div>
             <div style="overflow-x: auto;">
