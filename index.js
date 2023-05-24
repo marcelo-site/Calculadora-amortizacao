@@ -23,14 +23,16 @@ tabela.forEach(el => {
         if (calc) {
             calcular()
         }
-    })})
+    })
+})
 
 const replaceInput = (el) => {
     el.addEventListener('input', function () {
-   this.value = this.value
-    .replace(/[^0-9.|,]/g, '')
-    .replace(/(\*?)\*/g, '$1');
-})}
+        this.value = this.value
+            .replace(/[^0-9.|,]/g, '')
+            .replace(/(\*?)\*/g, '$1');
+    })
+}
 replaceInput(form.financiamento)
 replaceInput(form.taxa)
 
@@ -48,13 +50,24 @@ const alert = (text) => {
 
 const render = (param1, param2, param3, param4, param5) => {
     divParcela.innerHTML +=
-        `<p>
-        <span>${param1 + 1}</span> 
-        <span>${param2}</span>
-        <span>${param3}</span>
-        <span>${param4}</span>
-        <span>${param5}</span>
-        </p>`
+        `<p><span>${param1 + 1}</span> 
+        <span>${param2.toLocaleString('pt-br', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        })}</span>
+        <span>${param3.toLocaleString('pt-br', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).replace('-', '')
+        }</span>
+        <span>${param4.toLocaleString('pt-br', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        })}</span>
+        <span>${param5.toLocaleString('pt-br', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        })}</span></p>`
 }
 
 const calcular = () => {
@@ -76,21 +89,17 @@ const calcular = () => {
             .replace(/\./g, '')
             .replace(/\,/g, '.')
         )
-        const taxa = parseFloat(inpTaxa
-            .replace(/\,/g, '.')) / 100
-
+        const taxa = parseFloat(inpTaxa.replace(/\,/g, '.')) / 100
         const qtyParcelas = form.qtyParcelas.value  // Número de Parcelas(Período)
-        let table = form.tabela.value  // regra de juros tabela price || sac
+        let table = form.tabela.value  // Regra de juros tabela PRICE || SAC
         let valueAmortizacao = 0    // Amortização=> a = valorFinanciamento/qtyParcelas ;  
         let parcelasPG = 0          // Número de Parcelas Pagas 
-        let totalJuros = 0          // Total de juros pagos do financiamento
+        let totalJuros = 0          // Total de juros pagos no financiamento
         let totalPago = 0           // Total pago com juros
-        let valueParacelas = 0      // Valor das poarcelas
+        let valueParacelas = 0      // Valor das parcelas
         let value = 0               // Aux para calcular valueParcelas
-        let saldoDevedor = 0        // Financiamento restante sem juros
-        let saldoDevedorBR          // saldoDevedor em moeda br
-        let jurosValue = 0          // Valor do montante de juros pago no mês
-        let jurosValueBR             // jurosValue em moeda br
+        let saldoDevedor = 0        // Divda restante sem juros
+        let jurosMes = 0       // Montante de juros pago no mês
 
         div.classList.add('table')
         div.classList.remove('alert')
@@ -99,71 +108,32 @@ const calcular = () => {
         if (table === 'price') {
             for (let index = 0; index < qtyParcelas; index++) {
                 if (index === 0) {
-                    jurosValue = valorFinanciamento -
+                    jurosMes = valorFinanciamento -
                         (valorFinanciamento - (valorFinanciamento * taxa))
                 }
-                value = valorFinanciamento * (Math.pow((1 + taxa), qtyParcelas) * taxa) / (Math.pow((1 + taxa), qtyParcelas) - 1)
-                valueParacelas = value.toLocaleString('pt-br',
-                    {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                    })
+                valueParacelas = valorFinanciamento * (Math.pow((1 + taxa), qtyParcelas) * taxa) / (Math.pow((1 + taxa), qtyParcelas) - 1)
                 if (totalPago) {
-                    jurosValue = saldoDevedor * taxa
-                    saldoDevedor = saldoDevedor - (value - jurosValue)
+                    jurosMes = saldoDevedor * taxa
+                    saldoDevedor = saldoDevedor - (valueParacelas - jurosMes)
                 } else {
-                    saldoDevedor = valorFinanciamento - (value - jurosValue)
+                    saldoDevedor = valorFinanciamento - (valueParacelas - jurosMes)
                 }
-                totalPago += value
-                valueAmortizacao = (jurosValue - value).toLocaleString('pt-br',
-                    {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                    }).replace('-', '')
+                totalPago += valueParacelas
+                valueAmortizacao = (jurosMes - valueParacelas)
 
-                jurosValueBR = jurosValue.toLocaleString('pt-br',
-                    {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                    })
-                saldoDevedorBR = saldoDevedor.toLocaleString('pt-br',
-                    {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                    })
-
-                render(index, valueParacelas, valueAmortizacao, jurosValueBR, saldoDevedorBR)
+                render(index, valueParacelas, valueAmortizacao, jurosMes, saldoDevedor)
             }
         } else if (table === 'sac') {
             for (let index = 0; index < qtyParcelas; index++) {
                 valueAmortizacao = valorFinanciamento / qtyParcelas
                 parcelasPG = index
-                const value = valueAmortizacao + taxa * (valorFinanciamento - (parcelasPG * valueAmortizacao))
-                totalPago += value
-                valueParacelas = value.toLocaleString('pt-br',
-                    {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                    })
-                jurosValue = value - valueAmortizacao
+                valueParacelas = valueAmortizacao + taxa * (valorFinanciamento - (parcelasPG * valueAmortizacao))
+                
+                totalPago += valueParacelas
+                jurosMes = valueParacelas - valueAmortizacao
                 saldoDevedor = valorFinanciamento - valueAmortizacao * (parcelasPG + 1)
 
-                const parcela = valueAmortizacao.toLocaleString('pt-br',
-                    {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                    })
-                jurosValueBR = jurosValue.toLocaleString('pt-br',
-                    {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                    })
-                saldoDevedorBR = saldoDevedor.toLocaleString('pt-br',
-                    {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                    })
-                render(index, valueParacelas, parcela, jurosValueBR, saldoDevedorBR)
+                render(index, valueParacelas, valueAmortizacao, jurosMes, saldoDevedor)
             }
         }
         none.classList.remove('none')

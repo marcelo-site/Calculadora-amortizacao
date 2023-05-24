@@ -83,13 +83,6 @@ input[type='submit']:focus {
     cursor: pointer;
 }
 
-/* select {
-    text-align: center;
-    width: 120px;
-    padding-left: 0;
-    padding-right: 0;
-} */
-
 input[type='radio'] {
     display: none;
 }
