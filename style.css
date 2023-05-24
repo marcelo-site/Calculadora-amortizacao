@@ -101,7 +101,7 @@ input[type='radio'] {
 .grid {
     text-align: center;
     display: grid;
-    grid-template-columns: .31fr repeat(4, 1fr)
+    grid-template-columns: .305fr repeat(4, 1fr)
 }
 
 .grid span {
@@ -134,18 +134,12 @@ p span {
     border-radius: 0 0 5px;
 }
 
-.table p:nth-child(1) {
-    border-radius: 5px 5px 0 0;
-}
-
 .table p:nth-child(odd) {
     background-color: #e7e7e7;
 }
 
 .table p {
-    padding: 0.2em;
     border-bottom: 1px solid;
-    padding-left: 0.5em
 }
 
 .alert {
