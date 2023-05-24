@@ -10,7 +10,24 @@ const price = document.querySelector('#label-price')
 const sac = document.querySelector('#label-sac')
 const tabela = form.tabela
 let calc = false
+button = document.querySelector('button')
 
+const limpar = () => {
+    calc = false
+    divParcela.innerHTML = ''
+    resultado.innerHTML = ''
+    resumo.innerHTML = ''
+    none.classList.add('none')
+    form.financiamento.value = ''
+    form.taxa.value = ''
+    form.qtyParcelas.value = ''
+    button.classList.add('none')
+    tabela[0].click()
+}
+button.addEventListener('click', (e) => {
+    e.preventDefault()
+    limpar()
+})
 const active = (node1, node2) => {
     node1.classList.toggle('active')
     node1.classList.toggle('inactive')
@@ -128,7 +145,7 @@ const calcular = () => {
                 valueAmortizacao = valorFinanciamento / qtyParcelas
                 parcelasPG = index
                 valueParacelas = valueAmortizacao + taxa * (valorFinanciamento - (parcelasPG * valueAmortizacao))
-                
+
                 totalPago += valueParacelas
                 jurosMes = valueParacelas - valueAmortizacao
                 saldoDevedor = valorFinanciamento - valueAmortizacao * (parcelasPG + 1)
@@ -138,13 +155,13 @@ const calcular = () => {
         }
         none.classList.remove('none')
         resultado.append(div)
-        resumo.setAttribute("style", "font-size: .8em;")
         resumo.innerHTML += `<p><span class='bold'>Total pago:</span> 
         <span class='red'>${totalPago.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span></p>`
         totalJuros = totalPago - valorFinanciamento
         resumo.innerHTML += `<p><span class='bold'>Juros:</span>
         <span class='red'>${totalJuros.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span>
          </p>`
+         button.classList.remove('none')
     } else {
         textAlert = 'Revise as informações passadas !'
         alert(textAlert)
