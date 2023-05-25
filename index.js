@@ -80,11 +80,11 @@ const render = (param1, param2, param3, param4, param5) => {
         <span>${param4.toLocaleString('pt-br', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
-        })}</span>
+        }).replace('-', '')}</span>
         <span>${param5.toLocaleString('pt-br', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
-        })}</span></p>`
+        }).replace('-', '')}</span></p>`
 }
 
 const calcular = () => {
