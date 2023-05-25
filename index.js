@@ -12,22 +12,6 @@ const tabela = form.tabela
 let calc = false
 button = document.querySelector('button')
 
-const limpar = () => {
-    calc = false
-    divParcela.innerHTML = ''
-    resultado.innerHTML = ''
-    resumo.innerHTML = ''
-    none.classList.add('none')
-    form.financiamento.value = ''
-    form.taxa.value = ''
-    form.qtyParcelas.value = ''
-    button.classList.add('none')
-    tabela[0].click()
-}
-button.addEventListener('click', (e) => {
-    e.preventDefault()
-    limpar()
-})
 const active = (node1, node2) => {
     node1.classList.toggle('active')
     node1.classList.toggle('inactive')
@@ -42,7 +26,6 @@ tabela.forEach(el => {
         }
     })
 })
-
 const replaceInput = (el) => {
     el.addEventListener('input', function () {
         this.value = this.value
@@ -114,9 +97,8 @@ const calcular = () => {
         let totalJuros = 0          // Total de juros pagos no financiamento
         let totalPago = 0           // Total pago com juros
         let valueParacelas = 0      // Valor das parcelas
-        let value = 0               // Aux para calcular valueParcelas
         let saldoDevedor = 0        // Divda restante sem juros
-        let jurosMes = 0       // Montante de juros pago no mês
+        let jurosMes = 0            // Montante de juros pago no mês
 
         div.classList.add('table')
         div.classList.remove('alert')
@@ -167,3 +149,19 @@ const calcular = () => {
         alert(textAlert)
     }
 }
+const limpar = () => {
+    calc = false
+    divParcela.innerHTML = ''
+    resultado.innerHTML = ''
+    resumo.innerHTML = ''
+    none.classList.add('none')
+    form.financiamento.value = ''
+    form.taxa.value = ''
+    form.qtyParcelas.value = ''
+    button.classList.add('none')
+    tabela[0].click()
+}
+button.addEventListener('click', (e) => {
+    e.preventDefault()
+    limpar()
+})
