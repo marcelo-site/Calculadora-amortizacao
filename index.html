@@ -22,52 +22,51 @@
                 financeiras), ou algum outro valor que possa constar no pacote do Financiamento.
             </p>
         </div>
-        <form id="form">
+        <div class="form">
             <div>
+                <span class="tab">Financiamento</span> <span class="tab inactive">Poupança</span><span>
+                </span>
+            </div>
+            <form id="form">
                 <div>
-                    <label for="financiamento">Valor do Financiamento</label>
-                    <input type="text" name="financiamento" id="financiamento" value="" placeholder="ex: 1.000,00 para R$ 1.000,00">
-                </div>
-                <div>
-                    <label for="taxa">Taxa de juros (ao mês)</label>
-                    <input type="text" name="taxa" id="taxa" 
-                    placeholder="ex: 5,80 para 5,8%">
-                </div>
-                <div>
-                    <label for="qtyParcelas">Quantidade de parcelas</label>
-                    <input type="number" name="qtyParcelas" id="qtyParcelas"
-                        placeholder="Digite a quantidade de parcelas">
-                </div>
-                <div id="parcelas">
-                    <div>Parcelas</div>
                     <div>
-                        <label id="label-price" class="active" for="price">Fixas</label>
-                        <input type="radio" name="tabela" id="price" value="price" checked>
-                        <label id="label-sac" class="inactive" for="sac">Descrescentes</label>
-                        <input type="radio" name="tabela" id="sac" value="sac">
+                        <label for="valor">Valor do <span id="finan-poup"></span>
+                        </label>
+                        <input type="text" name="valor" id="valor" value="" placeholder="ex: 1.000,00 para R$ 1.000,00">
                     </div>
-                    <input class="btn" type="submit" value="Calcular">
+                    <div>
+                        <label for="taxa">Taxa de juros (ao mês)</label>
+                        <input type="text" name="taxa" id="taxa" placeholder="ex: 5,80 para 5,8%">
+                    </div>
+                    <div>
+                        <label for="periodo">Quantidade de <span id="label-periodo">parcelas</span></label>
+                        <input type="number" name="periodo" id="periodo"
+                            placeholder="Digite a quantidade de parcelas">
+                    </div>
+                    <div id="parcelas">
+                        <div data-financ="">Parcelas</div>
+                        <div data-financ="">
+                            <label id="label-price" class="active" for="price">Fixas</label>
+                            <input type="radio" name="tabela" id="price" value="price" checked>
+                            <label id="label-sac" class="inactive" for="sac">Descrescentes</label>
+                            <input type="radio" name="tabela" id="sac" value="sac">
+                        </div>
+                        <input class="btn" type="submit" value="Calcular">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div style="overflow-x: auto;">
+            <div>
+                <div class="none" style="width: 600px;">
+                    <div id="resultado">
+                    </div>
                 </div>
             </div>
-        </form>
-            <div style="overflow-x: auto;">
-                <div>
-                    <div class="none" style="width: 600px;">
-                        <div class="grid">
-                            <span>N<sup>o</sup></span>
-                            <span>Parcelas</span>
-                            <span>Amortizações</span>
-                            <span>Juros</span>
-                            <span> Saldo Devedor</span>
-                        </div>
-                        <div id="resultado">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="resumo">
-            </div>
-            <button class="btn none">Limpar</button>
+        </div>
+        <div id="resumo">
+        </div>
+        <button class="btn none">Limpar</button>
     </main>
     <footer>
         <p>Feito por <a href="https://www.facebook.com/profile.php?id=100015225941991" target="_blank">Marcelo</a>

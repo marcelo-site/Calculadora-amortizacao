@@ -4,14 +4,50 @@ const resumo = document.querySelector('#resumo')
 const h2 = document.querySelector('#resultado h2')
 const none = document.querySelector('.none')
 const div = document.createElement('div')
-const divParcela = resultado.appendChild(div)
-let textAlert = ''
 const price = document.querySelector('#label-price')
 const sac = document.querySelector('#label-sac')
 const tabela = form.tabela
-let calc = false
-button = document.querySelector('button')
+const button = document.querySelector('button')
+const textFinanPoup = document.querySelector('#finan-poup')
+textFinanPoup.innerHTML = 'financiamento'
+const finanPoup = document.querySelectorAll('[data-financ]')
+const tab = document.querySelectorAll('.tab')
+const labelPerido = document.querySelector('#label-periodo')
 
+let poupanca = false
+let calc = false
+let textAlert = ''
+
+const changeTab = () => {
+    tab.forEach(el => el.classList.toggle('inactive'))
+
+    if (poupanca === false) {
+        labelPerido.innerHTML = 'parcelas'
+        none.setAttribute('style', '')
+        none.setAttribute('style', 'width: 600px;')
+        textFinanPoup.innerHTML = 'Financiamento'
+        finanPoup.forEach(el => {
+            el.classList.remove('none')
+        })
+    } else {
+        labelPerido.innerHTML = 'meses'
+        none.setAttribute('style', '')
+        none.setAttribute('style', 'width: 300px;')
+        textFinanPoup.innerHTML = 'Investimento'
+        finanPoup.forEach(el => {
+            el.classList.add('none')
+        })
+    }
+}
+
+tab[0].addEventListener('click', () => {
+    poupanca = false
+    changeTab()
+})
+tab[1].addEventListener('click', () => {
+    poupanca = true
+    changeTab()
+})
 const active = (node1, node2) => {
     node1.classList.toggle('active')
     node1.classList.toggle('inactive')
@@ -33,13 +69,17 @@ const replaceInput = (el) => {
             .replace(/(\*?)\*/g, '$1');
     })
 }
-replaceInput(form.financiamento)
+replaceInput(form.valor)
 replaceInput(form.taxa)
 
 form.addEventListener('submit', (event) => {
     event.preventDefault()
     calc = true
-    calcular()
+    if (poupanca === false) {
+        calcular()
+    } else {
+        poup()
+    }
 })
 
 const alert = (text) => {
@@ -49,8 +89,8 @@ const alert = (text) => {
 }
 
 const render = (param1, param2, param3, param4, param5) => {
-    divParcela.innerHTML +=
-        `<p><span>${param1 + 1}</span> 
+    resultado.innerHTML +=
+        `<p class="grid grid5"><span>${param1 + 1}</span> 
         <span>${param2.toLocaleString('pt-br', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
@@ -70,13 +110,46 @@ const render = (param1, param2, param3, param4, param5) => {
         }).replace('-', '')}</span></p>`
 }
 
+const resum = (param1, param2) => {
+    const juros = param1 - param2
+    none.classList.remove('none')
+    resumo.innerHTML = `<p><span class='bold'>Montante
+    <span style="font-weight: 100; font-size: .8em;">(valor inicial + juros)</span>:</span> 
+    <span class='red'>${param1.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span></p>
+    <p><span class='bold'>Juros:</span>
+    <span class='red'>${juros.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span></p>`
+    button.classList.remove('none')
+}
+
+const poup = () => {
+    let periodo = parseInt(form.periodo.value)
+    let taxa = parseFloat(form.taxa.value) / 100
+    let valor = parseFloat(form.valor.value)
+    let valueMes = valor
+    resultado.innerHTML = `<div class="grid grid3 bold"> <span>Meses</span><span>Valor</span></div>`
+    for (let i = 0; i < periodo; i++) {
+        valueMes += (valueMes * taxa)
+        resultado.innerHTML += `<p  class="grid grid3"><span>${i + 1} mês</span> 
+        <span>${valueMes.toLocaleString('pt-br', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        })}</span></p>`
+    }
+    none.classList.remove('none')
+    resum(valueMes, valor)
+}
+
 const calcular = () => {
-    resultado.innerHTML = ''
-    resumo.innerHTML = ''
-    let inpFinanciamento = form.financiamento.value
+    resultado.innerHTML = `<div class="grid grid5 bold">
+    <span>N<sup>o</sup></span>
+    <span>Parcelas</span>
+    <span>Amortizações</span>
+    <span>Juros</span>
+    <span> Saldo Devedor</span></div>`
+    let inpFinanciamento = form.valor.value
     let inpTaxa = form.taxa.value
 
-    if (inpFinanciamento && inpTaxa && form.qtyParcelas.value) {
+    if (inpFinanciamento && inpTaxa && form.periodo.value) {
         const financMatch = inpFinanciamento.match(/\,/g) || []
         const taxaMatch = inpTaxa.match(/\,/g) || []
 
@@ -90,9 +163,9 @@ const calcular = () => {
             .replace(/\,/g, '.')
         )
         const taxa = parseFloat(inpTaxa.replace(/\,/g, '.')) / 100
-        const qtyParcelas = form.qtyParcelas.value  // Número de Parcelas(Período)
+        const periodo = form.periodo.value  // Número de Parcelas(Período)
         let table = form.tabela.value  // Regra de juros tabela PRICE || SAC
-        let valueAmortizacao = 0    // Amortização=> a = valorFinanciamento/qtyParcelas ;  
+        let valueAmortizacao = 0    // Amortização=> a = valorFinanciamento/periodo ;  
         let parcelasPG = 0          // Número de Parcelas Pagas 
         let totalJuros = 0          // Total de juros pagos no financiamento
         let totalPago = 0           // Total pago com juros
@@ -102,15 +175,14 @@ const calcular = () => {
 
         div.classList.add('table')
         div.classList.remove('alert')
-        divParcela.innerHTML = ''
 
         if (table === 'price') {
-            for (let index = 0; index < qtyParcelas; index++) {
+            for (let index = 0; index < periodo; index++) {
                 if (index === 0) {
                     jurosMes = valorFinanciamento -
                         (valorFinanciamento - (valorFinanciamento * taxa))
                 }
-                valueParacelas = valorFinanciamento * (Math.pow((1 + taxa), qtyParcelas) * taxa) / (Math.pow((1 + taxa), qtyParcelas) - 1)
+                valueParacelas = valorFinanciamento * (Math.pow((1 + taxa), periodo) * taxa) / (Math.pow((1 + taxa), periodo) - 1)
                 if (totalPago) {
                     jurosMes = saldoDevedor * taxa
                     saldoDevedor = saldoDevedor - (valueParacelas - jurosMes)
@@ -123,8 +195,8 @@ const calcular = () => {
                 render(index, valueParacelas, valueAmortizacao, jurosMes, saldoDevedor)
             }
         } else if (table === 'sac') {
-            for (let index = 0; index < qtyParcelas; index++) {
-                valueAmortizacao = valorFinanciamento / qtyParcelas
+            for (let index = 0; index < periodo; index++) {
+                valueAmortizacao = valorFinanciamento / periodo
                 parcelasPG = index
                 valueParacelas = valueAmortizacao + taxa * (valorFinanciamento - (parcelasPG * valueAmortizacao))
 
@@ -135,15 +207,7 @@ const calcular = () => {
                 render(index, valueParacelas, valueAmortizacao, jurosMes, saldoDevedor)
             }
         }
-        none.classList.remove('none')
-        resultado.append(div)
-        resumo.innerHTML += `<p><span class='bold'>Total pago:</span> 
-        <span class='red'>${totalPago.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span></p>`
-        totalJuros = totalPago - valorFinanciamento
-        resumo.innerHTML += `<p><span class='bold'>Juros:</span>
-        <span class='red'>${totalJuros.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span>
-         </p>`
-         button.classList.remove('none')
+       resum(totalPago, valorFinanciamento)
     } else {
         textAlert = 'Revise as informações passadas !'
         alert(textAlert)
@@ -155,9 +219,9 @@ const limpar = () => {
     resultado.innerHTML = ''
     resumo.innerHTML = ''
     none.classList.add('none')
-    form.financiamento.value = ''
+    form.valor.value = ''
     form.taxa.value = ''
-    form.qtyParcelas.value = ''
+    form.periodo.value = ''
     button.classList.add('none')
     tabela[0].click()
 }
