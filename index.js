@@ -13,6 +13,8 @@ textFinanPoup.innerHTML = 'financiamento'
 const finanPoup = document.querySelectorAll('[data-financ]')
 const tab = document.querySelectorAll('.tab')
 const labelPerido = document.querySelector('#label-periodo')
+//"01/07/1986"
+// https://api.bcb.gov.br/dados/serie/bcdata.sgs.4390/dados?formato=json&dataInicial=01/04/2023&dataFinal=25/05/2023
 
 let poupanca = false
 let calc = false
