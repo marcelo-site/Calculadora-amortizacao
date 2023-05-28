@@ -13,43 +13,10 @@ textFinanPoup.innerHTML = 'financiamento'
 const finanPoup = document.querySelectorAll('[data-financ]')
 const tab = document.querySelectorAll('.tab')
 const labelPerido = document.querySelector('#label-periodo')
-//"01/07/1986"
-// https://api.bcb.gov.br/dados/serie/bcdata.sgs.4390/dados?formato=json&dataInicial=01/04/2023&dataFinal=25/05/2023
-
 let poupanca = false
 let calc = false
 let textAlert = ''
 
-const changeTab = () => {
-    tab.forEach(el => el.classList.toggle('inactive'))
-
-    if (poupanca === false) {
-        labelPerido.innerHTML = 'parcelas'
-        none.setAttribute('style', '')
-        none.setAttribute('style', 'width: 600px;')
-        textFinanPoup.innerHTML = 'Financiamento'
-        finanPoup.forEach(el => {
-            el.classList.remove('none')
-        })
-    } else {
-        labelPerido.innerHTML = 'meses'
-        none.setAttribute('style', '')
-        none.setAttribute('style', 'width: 300px;')
-        textFinanPoup.innerHTML = 'Investimento'
-        finanPoup.forEach(el => {
-            el.classList.add('none')
-        })
-    }
-}
-
-tab[0].addEventListener('click', () => {
-    poupanca = false
-    changeTab()
-})
-tab[1].addEventListener('click', () => {
-    poupanca = true
-    changeTab()
-})
 const active = (node1, node2) => {
     node1.classList.toggle('active')
     node1.classList.toggle('inactive')
@@ -115,30 +82,29 @@ const render = (param1, param2, param3, param4, param5) => {
 const resum = (param1, param2) => {
     const juros = param1 - param2
     none.classList.remove('none')
-    resumo.innerHTML = `<p><span class='bold'>Montante
-    <span style="font-weight: 100; font-size: .8em;">(valor inicial + juros)</span>:</span> 
+    resumo.innerHTML = `<p style="margin-bottom: -.3em;">
+    <span class='bold'>Montante
+    <span style="font-weight: 100; font-size: .8em;">(valor inicial + juros)</span>:
+    </span> 
     <span class='red'>${param1.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span></p>
+    
     <p><span class='bold'>Juros:</span>
     <span class='red'>${juros.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span></p>`
     button.classList.remove('none')
 }
 
-const poup = () => {
-    let periodo = parseInt(form.periodo.value)
-    let taxa = parseFloat(form.taxa.value) / 100
-    let valor = parseFloat(form.valor.value)
-    let valueMes = valor
-    resultado.innerHTML = `<div class="grid grid3 bold"> <span>Meses</span><span>Valor</span></div>`
-    for (let i = 0; i < periodo; i++) {
-        valueMes += (valueMes * taxa)
-        resultado.innerHTML += `<p  class="grid grid3"><span>${i + 1} mês</span> 
-        <span>${valueMes.toLocaleString('pt-br', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-        })}</span></p>`
+const simbolMatch = () => {
+    const financMatch = form.valor.value.match(/\,/g) || []
+    const taxaMatch = form.taxa.value.match(/\,/g) || []
+
+    if (financMatch.length > 1 || taxaMatch.length > 1) {
+        textAlert = "Para separar a casa dos milhares use ponto em vez de virgulas!"
+        none.classList.add('none')
+        resumo.innerHTML = ''
+        button.classList.add('none')
+        alert(textAlert)
+        return true
     }
-    none.classList.remove('none')
-    resum(valueMes, valor)
 }
 
 const calcular = () => {
@@ -148,36 +114,28 @@ const calcular = () => {
     <span>Amortizações</span>
     <span>Juros</span>
     <span> Saldo Devedor</span></div>`
-    let inpFinanciamento = form.valor.value
-    let inpTaxa = form.taxa.value
 
-    if (inpFinanciamento && inpTaxa && form.periodo.value) {
-        const financMatch = inpFinanciamento.match(/\,/g) || []
-        const taxaMatch = inpTaxa.match(/\,/g) || []
+    const taxa = parseFloat(form.taxa.value.replace(/\,/g, '.')) / 100
+    const periodo = form.periodo.value  // Número de Parcelas(Período)
+    let table = form.tabela.value  // Regra de juros tabela PRICE || SAC
+    let valueAmortizacao = 0    // Amortização=> a = valorFinanciamento/periodo ;  
+    let parcelasPG = 0          // Número de Parcelas Pagas 
+    let totalPago = 0           // Total pago com juros
+    let valueParacelas = 0      // Valor das parcelas
+    let saldoDevedor = 0        // Divda restante sem juros
+    let jurosMes = 0            // Montante de juros pago no mês
 
-        if (financMatch.length > 1 || taxaMatch.length > 1) {
-            textAlert = "Para separar a casa dos milhares use ponto em vez de virgulas!"
-            none.classList.add('none')
-            return alert(textAlert)
+    div.classList.add('table')
+    div.classList.remove('alert')
+
+    if (form.valor.value && form.taxa.value && form.periodo.value) {
+        if (simbolMatch()) {
+            return simbolMatch()
         }
-        const valorFinanciamento = parseFloat(inpFinanciamento
+        const valorFinanciamento = parseFloat(form.valor.value
             .replace(/\./g, '')
             .replace(/\,/g, '.')
         )
-        const taxa = parseFloat(inpTaxa.replace(/\,/g, '.')) / 100
-        const periodo = form.periodo.value  // Número de Parcelas(Período)
-        let table = form.tabela.value  // Regra de juros tabela PRICE || SAC
-        let valueAmortizacao = 0    // Amortização=> a = valorFinanciamento/periodo ;  
-        let parcelasPG = 0          // Número de Parcelas Pagas 
-        let totalJuros = 0          // Total de juros pagos no financiamento
-        let totalPago = 0           // Total pago com juros
-        let valueParacelas = 0      // Valor das parcelas
-        let saldoDevedor = 0        // Divda restante sem juros
-        let jurosMes = 0            // Montante de juros pago no mês
-
-        div.classList.add('table')
-        div.classList.remove('alert')
-
         if (table === 'price') {
             for (let index = 0; index < periodo; index++) {
                 if (index === 0) {
@@ -209,7 +167,7 @@ const calcular = () => {
                 render(index, valueParacelas, valueAmortizacao, jurosMes, saldoDevedor)
             }
         }
-       resum(totalPago, valorFinanciamento)
+        resum(totalPago, valorFinanciamento)
     } else {
         textAlert = 'Revise as informações passadas !'
         alert(textAlert)
@@ -217,7 +175,6 @@ const calcular = () => {
 }
 const limpar = () => {
     calc = false
-    divParcela.innerHTML = ''
     resultado.innerHTML = ''
     resumo.innerHTML = ''
     none.classList.add('none')
