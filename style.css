@@ -62,7 +62,7 @@ form {
     color: white;
     background-color: #584BC3;
     padding: 0.7em;
-    border-radius: 0 10px 10px 10px;
+    border-radius: 10px;
     margin-bottom: 1em;
 }
 
@@ -83,6 +83,10 @@ form label {
     background-color: #132ddb;
     box-shadow: 1px 1px 5px #00000094;
     cursor: pointer;
+}
+
+.btn:active {
+    background-color: #000078;
 }
 
 input[type='radio'] {
