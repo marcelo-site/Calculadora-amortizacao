@@ -107,7 +107,61 @@ const simbolMatch = () => {
     }
 }
 
+const date = new Date('2021/09/20')
+// const date = new Date()
+let month = date.getMonth()
+
+let mesAnterior = new Date(date.setMonth(date.getMonth() - 1))
+let year = date.getFullYear()
+
+let totIof = 0
+const iofFixo = 0.38 / 100
+
 const calcular = () => {
+
+
+    const arrIofMes = []
+    // let totIof = 0
+    const iof = (param1, param2) => {
+        let limitDayIof = 0
+        for (let i = 0; i < param1; i++) {
+            let mes = (month + i) % 12
+            if (mes === 0) {
+                year += 1
+            }
+            const mesAtual = new Date(date.setMonth(date.getMonth() + 1))
+            const monthaaaa = mesAtual.toLocaleString('default', { month: 'long' });
+            console.log(monthaaaa)
+    
+            if (limitDayIof < 365) {
+                if ( mes !== 1 && (mes < 7 && mes % 2 === 0) ||
+                (mes >= 7 && mes % 2 !== 0)) {
+                    limitDayIof += 31
+                }
+                else if (mes !== 1 && (mes < 7 && mes % 2 !== 0) ||
+                    (mes >= 7 && mes % 2 === 0)) {
+                    limitDayIof += 30
+                }
+                else if (mes === 1 && year % 4 !== 0) {
+                    limitDayIof += 28
+                }
+                else if (mes === 1 && year % 4 === 0) {
+                    limitDayIof += 29
+                }
+            }
+
+            if(table) {
+
+            }
+    
+            const imp = 0.0082 / 100
+            const iof = param2 * imp * limitDayIof
+            totIof += iof
+            arrIofMes.push(iof) 
+        }
+    }
+
+
     resultado.innerHTML = `<div class="grid grid5 bold">
     <span>N<sup>o</sup></span>
     <span>Parcelas</span>
@@ -132,31 +186,43 @@ const calcular = () => {
         if (simbolMatch()) {
             return simbolMatch()
         }
-        const valorFinanciamento = parseFloat(form.valor.value
+        let valorFinanciamento = parseFloat(form.valor.value
             .replace(/\./g, '')
             .replace(/\,/g, '.')
-        )
+        ) 
         if (table === 'price') {
+            
             for (let index = 0; index < periodo; index++) {
+                
                 if (index === 0) {
                     jurosMes = valorFinanciamento -
                         (valorFinanciamento - (valorFinanciamento * taxa))
                 }
+
                 valueParacelas = valorFinanciamento * (Math.pow((1 + taxa), periodo) * taxa) / (Math.pow((1 + taxa), periodo) - 1)
                 if (totalPago) {
+                    
                     jurosMes = saldoDevedor * taxa
                     saldoDevedor = saldoDevedor - (valueParacelas - jurosMes)
                 } else {
                     saldoDevedor = valorFinanciamento - (valueParacelas - jurosMes)
                 }
-                totalPago += valueParacelas
                 valueAmortizacao = (jurosMes - valueParacelas)
+                iof(periodo, valueAmortizacao)
+                totalPago += valueParacelas
 
                 render(index, valueParacelas, valueAmortizacao, jurosMes, saldoDevedor)
             }
         } else if (table === 'sac') {
-            for (let index = 0; index < periodo; index++) {
-                valueAmortizacao = valorFinanciamento / periodo
+            valueAmortizacao = valorFinanciamento / periodo
+            iof(periodo, valueAmortizacao)
+            valorFinanciamento = valorFinanciamento + totIof + 
+            (valorFinanciamento * iofFixo)
+
+            // novo valor com iof incluso
+            valueAmortizacao = valorFinanciamento / periodo
+
+            for (let index = 0; index < periodo; index++) { 
                 parcelasPG = index
                 valueParacelas = valueAmortizacao + taxa * (valorFinanciamento - (parcelasPG * valueAmortizacao))
 
@@ -173,6 +239,7 @@ const calcular = () => {
         alert(textAlert)
     }
 }
+
 const limpar = () => {
     calc = false
     resultado.innerHTML = ''
