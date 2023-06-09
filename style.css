@@ -117,7 +117,7 @@ input[type='radio'] {
 }
 
 .grid5 {
-    grid-template-columns: .305fr repeat(4, 1fr)
+    grid-template-columns: .305fr repeat(2, 1fr) .7fr repeat(2, 1fr)
 }
 
 .flex {

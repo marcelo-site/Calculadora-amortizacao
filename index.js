@@ -57,7 +57,7 @@ const alert = (text) => {
     return resumo.append(div)
 }
 
-const render = (param1, param2, param3, param4, param5) => {
+const render = (param1, param2, param3, param4, param5, param6) => {
     resultado.innerHTML +=
         `<p class="grid grid5"><span>${param1 + 1}</span> 
         <span>${param2.toLocaleString('pt-br', {
@@ -76,20 +76,32 @@ const render = (param1, param2, param3, param4, param5) => {
         <span>${param5.toLocaleString('pt-br', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
+        }).replace('-', '')}</span>
+        <span>${param6.toLocaleString('pt-br', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
         }).replace('-', '')}</span></p>`
 }
 
-const resum = (param1, param2) => {
+const resum = (param1, param2, param3, param4) => {
+
+    const jurosIof1 = param4.reduce((acc, cur) => acc + cur) 
+    - param3
+    console.log(jurosIof1)
     const juros = param1 - param2
+        + jurosIof1
+    const iof = 
+    // param3 + 
+    jurosIof1
     none.classList.remove('none')
     resumo.innerHTML = `<p style="margin-bottom: -.3em;">
-    <span class='bold'>Montante
-    <span style="font-weight: 100; font-size: .8em;">(valor inicial + juros)</span>:
-    </span> 
+    <span class='bold'>Total Pago:</span> 
     <span class='red'>${param1.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span></p>
     
     <p><span class='bold'>Juros:</span>
-    <span class='red'>${juros.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span></p>`
+    <span class='red'>${juros.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span></p>
+    <p><span class='bold'>IOF:</span>
+    <span class='red'>${iof.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span></p>`
     button.classList.remove('none')
 }
 
@@ -106,66 +118,46 @@ const simbolMatch = () => {
         return true
     }
 }
-
 const date = new Date('2021/09/20')
-// const date = new Date()
+// let date = new Date
 let month = date.getMonth()
 
 let mesAnterior = new Date(date.setMonth(date.getMonth() - 1))
-let year = date.getFullYear()
+const imp = 0.0082 / 100
 
-let totIof = 0
-const iofFixo = 0.38 / 100
-
+const arrIofMes = []
+const yearAtual = date.getFullYear()
 const calcular = () => {
-
-
-    const arrIofMes = []
-    // let totIof = 0
-    const iof = (param1, param2) => {
-        let limitDayIof = 0
-        for (let i = 0; i < param1; i++) {
-            let mes = (month + i) % 12
-            if (mes === 0) {
-                year += 1
-            }
-            const mesAtual = new Date(date.setMonth(date.getMonth() + 1))
-            const monthaaaa = mesAtual.toLocaleString('default', { month: 'long' });
-            console.log(monthaaaa)
-    
-            if (limitDayIof < 365) {
-                if ( mes !== 1 && (mes < 7 && mes % 2 === 0) ||
+    let year = 0
+    let limitDayIof = 0
+    let totIof = 0
+    const iof = (param) => {
+        let mes = (month + param) % 12
+        if (mes === 0) {
+            year = parseInt(yearAtual) + 1
+        }
+        if (limitDayIof < 360) {
+            if (mes !== 1 && (mes < 7 && mes % 2 === 0) ||
                 (mes >= 7 && mes % 2 !== 0)) {
-                    limitDayIof += 31
-                }
-                else if (mes !== 1 && (mes < 7 && mes % 2 !== 0) ||
-                    (mes >= 7 && mes % 2 === 0)) {
-                    limitDayIof += 30
-                }
-                else if (mes === 1 && year % 4 !== 0) {
-                    limitDayIof += 28
-                }
-                else if (mes === 1 && year % 4 === 0) {
-                    limitDayIof += 29
-                }
+                limitDayIof += 31
             }
-
-            if(table) {
-
+            else if (mes !== 1 && (mes < 7 && mes % 2 !== 0) ||
+                (mes >= 7 && mes % 2 === 0)) {
+                limitDayIof += 30
             }
-    
-            const imp = 0.0082 / 100
-            const iof = param2 * imp * limitDayIof
-            totIof += iof
-            arrIofMes.push(iof) 
+            else if (mes === 1 && year % 4 !== 0) {
+                limitDayIof += 28
+            }
+            else if (mes === 1 && year % 4 === 0) {
+                limitDayIof += 29
+            }
         }
     }
-
-
-    resultado.innerHTML = `<div class="grid grid5 bold">
+    resultado.innerHTML = `<div class="grid grid5 bold" style="font-size: .9em;">
     <span>N<sup>o</sup></span>
     <span>Parcelas</span>
     <span>Amortizações</span>
+    <span>IOF</span>
     <span>Juros</span>
     <span> Saldo Devedor</span></div>`
 
@@ -175,10 +167,11 @@ const calcular = () => {
     let valueAmortizacao = 0    // Amortização=> a = valorFinanciamento/periodo ;  
     let parcelasPG = 0          // Número de Parcelas Pagas 
     let totalPago = 0           // Total pago com juros
-    let valueParacelas = 0      // Valor das parcelas
+    let valueParcelas = 0      // Valor das parcelas
     let saldoDevedor = 0        // Divda restante sem juros
     let jurosMes = 0            // Montante de juros pago no mês
-
+    const iofFixo = 0.38 / 100
+    let taxaIof = 0
     div.classList.add('table')
     div.classList.remove('alert')
 
@@ -189,57 +182,80 @@ const calcular = () => {
         let valorFinanciamento = parseFloat(form.valor.value
             .replace(/\./g, '')
             .replace(/\,/g, '.')
-        ) 
+        )
+        const jurosIof = []
         if (table === 'price') {
-            
+            const arr = []
             for (let index = 0; index < periodo; index++) {
-                
                 if (index === 0) {
                     jurosMes = valorFinanciamento -
                         (valorFinanciamento - (valorFinanciamento * taxa))
                 }
-
-                valueParacelas = valorFinanciamento * (Math.pow((1 + taxa), periodo) * taxa) / (Math.pow((1 + taxa), periodo) - 1)
+                valueParcelas = valorFinanciamento * (Math.pow((1 + taxa), periodo) * taxa) / (Math.pow((1 + taxa), periodo) - 1)
                 if (totalPago) {
-                    
                     jurosMes = saldoDevedor * taxa
-                    saldoDevedor = saldoDevedor - (valueParacelas - jurosMes)
+                    saldoDevedor = saldoDevedor - (valueParcelas - jurosMes)
                 } else {
-                    saldoDevedor = valorFinanciamento - (valueParacelas - jurosMes)
+                    saldoDevedor = valorFinanciamento - (valueParcelas - jurosMes)
                 }
-                valueAmortizacao = (jurosMes - valueParacelas)
-                iof(periodo, valueAmortizacao)
-                totalPago += valueParacelas
+                valueAmortizacao = valueParcelas - jurosMes
+                iof(index)
+                taxaIof = valueAmortizacao * imp * limitDayIof
+                totIof += taxaIof
 
-                render(index, valueParacelas, valueAmortizacao, jurosMes, saldoDevedor)
+                totalPago += valueParcelas
+                const obj = {
+                    index,
+                    valueParcelas,
+                    valueAmortizacao,
+                    taxaIof,
+                    jurosMes,
+                    saldoDevedor
+                }
+                arr.push(obj)
             }
+            totIof = totIof + iofFixo * valorFinanciamento
+            let totIofParcela = 0
+            arr.map((el, i) => {
+                // if (i < arr.length) {
+                totIofParcela = totIof * (Math.pow((1 + taxa), periodo) * taxa) / (Math.pow((1 + taxa), periodo) - 1)
+                jurosIof.push(totIofParcela)
+                // }
+
+                const valueParcelas = el.valueParcelas
+                    + totIofParcela
+                render(el.index,
+                    valueParcelas,
+                    el.valueAmortizacao,
+                    el.taxaIof,
+                    el.jurosMes,
+                    el.saldoDevedor)
+            })
         } else if (table === 'sac') {
             valueAmortizacao = valorFinanciamento / periodo
-            iof(periodo, valueAmortizacao)
-            valorFinanciamento = valorFinanciamento + totIof + 
-            (valorFinanciamento * iofFixo)
 
-            // novo valor com iof incluso
-            valueAmortizacao = valorFinanciamento / periodo
+            for (let i = 0; i < periodo; i++) {
+                iof(i)
+                const taxaIof = valueAmortizacao * imp * limitDayIof
+                totIof += taxaIof * valorFinanciamento
 
-            for (let index = 0; index < periodo; index++) { 
-                parcelasPG = index
-                valueParacelas = valueAmortizacao + taxa * (valorFinanciamento - (parcelasPG * valueAmortizacao))
+                parcelasPG = i
+                valueParcelas = valueAmortizacao + taxa * (valorFinanciamento - (parcelasPG * valueAmortizacao)) + taxaIof
 
-                totalPago += valueParacelas
-                jurosMes = valueParacelas - valueAmortizacao
+                totalPago += valueParcelas
+                jurosMes = valueParcelas - valueAmortizacao
                 saldoDevedor = valorFinanciamento - valueAmortizacao * (parcelasPG + 1)
 
-                render(index, valueParacelas, valueAmortizacao, jurosMes, saldoDevedor)
+                render(i, valueParcelas, valueAmortizacao, taxaIof, jurosMes, saldoDevedor)
             }
+            totIof = totIof + iofFixo
         }
-        resum(totalPago, valorFinanciamento)
+        resum(totalPago, valorFinanciamento, totIof, jurosIof)
     } else {
         textAlert = 'Revise as informações passadas !'
         alert(textAlert)
     }
 }
-
 const limpar = () => {
     calc = false
     resultado.innerHTML = ''
