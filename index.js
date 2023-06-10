@@ -50,13 +50,11 @@ form.addEventListener('submit', (event) => {
         poup()
     }
 })
-
 const alert = (text) => {
     div.classList.add('alert')
     div.innerHTML = text
     return resumo.append(div)
 }
-
 const render = (param1, param2, param3, param4, param5, param6) => {
     resultado.innerHTML +=
         `<p class="grid grid5"><span>${param1 + 1}</span> 
@@ -82,16 +80,13 @@ const render = (param1, param2, param3, param4, param5, param6) => {
             maximumFractionDigits: 2,
         }).replace('-', '')}</span></p>`
 }
-
 const resum = (param1, param2, param3, param4) => {
-
     const jurosIof1 = param4.reduce((acc, cur) => acc + cur) 
     - param3
-    console.log(jurosIof1)
     const juros = param1 - param2
         + jurosIof1
     const iof = 
-    // param3 + 
+    param3 + 
     jurosIof1
     none.classList.remove('none')
     resumo.innerHTML = `<p style="margin-bottom: -.3em;">
@@ -104,7 +99,6 @@ const resum = (param1, param2, param3, param4) => {
     <span class='red'>${iof.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span></p>`
     button.classList.remove('none')
 }
-
 const simbolMatch = () => {
     const financMatch = form.valor.value.match(/\,/g) || []
     const taxaMatch = form.taxa.value.match(/\,/g) || []
@@ -186,12 +180,12 @@ const calcular = () => {
         const jurosIof = []
         if (table === 'price') {
             const arr = []
+            valueParcelas = valorFinanciamento * (Math.pow((1 + taxa), periodo) * taxa) / (Math.pow((1 + taxa), periodo) - 1)
             for (let index = 0; index < periodo; index++) {
                 if (index === 0) {
                     jurosMes = valorFinanciamento -
                         (valorFinanciamento - (valorFinanciamento * taxa))
                 }
-                valueParcelas = valorFinanciamento * (Math.pow((1 + taxa), periodo) * taxa) / (Math.pow((1 + taxa), periodo) - 1)
                 if (totalPago) {
                     jurosMes = saldoDevedor * taxa
                     saldoDevedor = saldoDevedor - (valueParcelas - jurosMes)
@@ -221,7 +215,6 @@ const calcular = () => {
                 totIofParcela = totIof * (Math.pow((1 + taxa), periodo) * taxa) / (Math.pow((1 + taxa), periodo) - 1)
                 jurosIof.push(totIofParcela)
                 // }
-
                 const valueParcelas = el.valueParcelas
                     + totIofParcela
                 render(el.index,
